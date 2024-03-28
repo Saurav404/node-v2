@@ -69,7 +69,7 @@ export class CalcService {
     for (let i = 0; i < expression.length; i++) {
       const char = expression[i];
       if (char >= '0' && char <= '9') {
-        numString += char;                                       
+        numString += char;
       } else {
         if (numString !== '') {
           numArr.push(parseFloat(numString));
@@ -108,7 +108,16 @@ export class CalcService {
       numArr.push(parseFloat(numString));
     }
 
-    return this.evaluateExpression(numArr, operators);
+    //evaluate the simplified expression
+    while (operators.length > 0) {
+      const op = operators.pop();
+      const num1 = numArr.pop();
+      const num2 = numArr.pop();
+
+      numArr.push(this.performOperation(op, num1, num2));
+    }
+
+    return numArr.pop();
   }
 
   //Method to perform the operations
@@ -132,18 +141,5 @@ export class CalcService {
           400,
         );
     }
-  }
-
-  //Method to evaluate the operations
-  private evaluateExpression(numArr: number[], operators: string[]) {
-    while (operators.length > 0) {
-      const op = operators.pop();
-      const num1 = numArr.pop();
-      const num2 = numArr.pop();
-
-      numArr.push(this.performOperation(op, num1, num2));
-    }
-
-    return numArr.pop();
   }
 }
